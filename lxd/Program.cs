@@ -7,9 +7,20 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using RestSharp.Deserializers;
 
 namespace lxd
 {
+	class ContainerExecDTO
+	{
+		public string[] command = "".Split(' ');
+		[JsonProperty("wait-for-websocket")]
+		public bool waitForWebsocket = true;
+		public bool interactive = true;
+	}
+
     class Program
     {
         static void Main(string[] args)
@@ -27,7 +38,9 @@ namespace lxd
 			client.ClientCertificates = new X509CertificateCollection();
 			client.ClientCertificates.Add(new X509Certificate2("cert/client.p12"));
 
-			RestRequest request = new RestRequest("/1.0");
+			RestRequest request = new RestRequest("/1.0/containers/alpine/exec", Method.POST);
+			request.JsonSerializer = new JsonNetSerializer();
+			request.AddJsonBody(new ContainerExecDTO());
 
             IRestResponse response = client.Execute(request);
 
