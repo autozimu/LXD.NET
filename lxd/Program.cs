@@ -9,13 +9,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using RestSharp.Deserializers;
+using System.Diagnostics;
+using System.Threading;
+using System.Net.WebSockets;
 
 namespace lxd
 {
 	class ContainerExecDTO
 	{
-		public string[] command = "".Split(' ');
+		public string[] command = "cat /etc/issue".Split(' ');
 		[JsonProperty("wait-for-websocket")]
 		public bool waitForWebsocket = true;
 		public bool interactive = true;
@@ -23,6 +25,8 @@ namespace lxd
 
     class Program
     {
+		const string serviceAddr = "ubuntu:8443";
+
         static void Main(string[] args)
         {
 			// Bypass handshake error. C# default tls13 is not supported by lxd.
@@ -32,7 +36,7 @@ namespace lxd
             // Bypass slow proxy auto configuration.
             WebRequest.DefaultWebProxy = null;
 
-            RestClient client = new RestClient("https://ubuntu:8443");
+            RestClient client = new RestClient($"https://{serviceAddr}");
 
 			// Add client certificate.
 			client.ClientCertificates = new X509CertificateCollection();
@@ -42,16 +46,17 @@ namespace lxd
 			RestRequest request = new RestRequest("/1.0/containers/alpine/exec", Method.POST);
 			request.JsonSerializer = new JsonNetSerializer();
 			request.AddJsonBody(new ContainerExecDTO());
-            IRestResponse response = client.Execute(request);
+			IRestResponse response = client.Execute(request);
 
-            Contract.Assume(response != null);
+			Contract.Assume(response != null);
 			if (response.ErrorException != null)
 			{
 				throw response.ErrorException;
 			}
 
-			// Get fds.
 			string operationUrl = JToken.Parse(response.Content).Value<string>("operation");
+
+			// Get fds secret.
 			request = new RestRequest(operationUrl);
 			response = client.Execute(request);
 
@@ -63,9 +68,39 @@ namespace lxd
 			string secret = JToken.Parse(response.Content).SelectToken("metadata.metadata.fds.0").Value<string>();
 
 			// Connect websocket.
+			string wsUrl = $"wss://{serviceAddr}/{operationUrl}/websocket?secret={secret}";
+			//string wsUrl = "wss://echo.websocket.org";
+
+			string stdout = ReadAllLinesFromWebSocketAsync(wsUrl).Result;
+
+			Console.WriteLine(stdout);
 
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
         }
+
+		static async Task<string> ReadAllLinesFromWebSocketAsync(string url)
+		{
+			const int WebSocketChunkSize = 1024;
+
+			StringBuilder stdout = new StringBuilder();
+
+			using (ClientWebSocket ws = new ClientWebSocket())
+			{
+				await ws.ConnectAsync(new Uri(url), CancellationToken.None);
+
+				byte[] buffer = new byte[WebSocketChunkSize];
+				WebSocketReceiveResult result;
+				do
+				{
+					result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+					string partialMsg = Encoding.UTF8.GetString(buffer, 0, result.Count);
+					stdout.Append(partialMsg);
+				} while (!result.EndOfMessage);
+			}
+
+			return stdout.ToString();
+		}
     }
 }
