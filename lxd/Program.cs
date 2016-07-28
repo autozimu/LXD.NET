@@ -1,6 +1,7 @@
 ﻿using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
@@ -30,6 +31,7 @@ namespace lxd
 
             IRestResponse response = client.Execute(request);
 
+            Contract.Assume(response != null);
             if (response.ErrorException != null)
                 throw response.ErrorException;
 
