@@ -29,7 +29,7 @@ namespace lxd
 
         static void Main(string[] args)
         {
-			// Bypass handshake error. C# default tls13 is not supported by lxd.
+			// Bypass handshake error. LXD do not support TLS 1.3, while this is the default by .NET.
 			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
 			// Bypass self-signed certificate error.
 			ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyError) => true;
