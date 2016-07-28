@@ -38,19 +38,31 @@ namespace lxd
 			client.ClientCertificates = new X509CertificateCollection();
 			client.ClientCertificates.Add(new X509Certificate2("cert/client.p12"));
 
+			// Exec
 			RestRequest request = new RestRequest("/1.0/containers/alpine/exec", Method.POST);
 			request.JsonSerializer = new JsonNetSerializer();
 			request.AddJsonBody(new ContainerExecDTO());
-
             IRestResponse response = client.Execute(request);
 
             Contract.Assume(response != null);
-            if (response.ErrorException != null)
-                throw response.ErrorException;
+			if (response.ErrorException != null)
+			{
+				throw response.ErrorException;
+			}
 
-            string content = response.Content;
+			// Get fds.
+			string operationUrl = JToken.Parse(response.Content).Value<string>("operation");
+			request = new RestRequest(operationUrl);
+			response = client.Execute(request);
 
-            Console.WriteLine(content);
+			if (response.ErrorException != null)
+			{
+				throw response.ErrorException;
+			}
+
+			string secret = JToken.Parse(response.Content).SelectToken("metadata.metadata.fds.0").Value<string>();
+
+			// Connect websocket.
 
             Console.WriteLine("Press any key to exit...");
             Console.ReadKey();
