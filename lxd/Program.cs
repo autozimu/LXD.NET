@@ -42,28 +42,26 @@ namespace lxd
 			client.ClientCertificates = new X509CertificateCollection();
 			client.ClientCertificates.Add(new X509Certificate2("cert/client.p12"));
 
-			// Exec
-			RestRequest request = new RestRequest("/1.0/containers/alpine/exec", Method.POST);
+            RestRequest request;
+            IRestResponse response;
+
+            // Assert authrization.
+            request = new RestRequest("/1.0");
+            response = client.Execute(request);
+            string auth = JToken.Parse(response.Content).SelectToken("metadata.auth").Value<string>();
+            Contract.Assert(auth == "trusted");
+
+            // Exec
+            request = new RestRequest("/1.0/containers/alpine/exec", Method.POST);
 			request.JsonSerializer = new JsonNetSerializer();
 			request.AddJsonBody(new ContainerExecDTO());
-			IRestResponse response = client.Execute(request);
+			response = client.Execute(request);
 
-			Contract.Assume(response != null);
-			if (response.ErrorException != null)
-			{
-				throw response.ErrorException;
-			}
-
-			string operationUrl = JToken.Parse(response.Content).Value<string>("operation");
+            string operationUrl = JToken.Parse(response.Content).Value<string>("operation");
 
 			// Get fds secret.
 			request = new RestRequest(operationUrl);
 			response = client.Execute(request);
-
-			if (response.ErrorException != null)
-			{
-				throw response.ErrorException;
-			}
 
 			string secret = JToken.Parse(response.Content).SelectToken("metadata.metadata.fds.0").Value<string>();
 
