@@ -12,15 +12,15 @@ namespace lxd
     public class Collection<T> : IEnumerable<T>
     {
         string component;
-        API api;
 
-        string[] ids => api.Get(component).ToObject<string[]>();
+        string[] ids => Client.API.Get(component).ToObject<string[]>();
 
-        public Collection(string component, API api)
+        public Collection(string component)
         {
             this.component = component;
-            this.api = api;
         }
+
+        public int Count => ids.Length;
 
         public T this[int index]
         {
@@ -31,11 +31,11 @@ namespace lxd
             set { /* set the specified index to value here */ }
         }
 
-        public T this[string index]
+        public T this[string id]
         {
             get
             {
-                return api.Get<T>(index);
+                return Client.API.Get<T>(id);
             }
             set { /* set the specified index to value here */ }
         }
@@ -51,6 +51,12 @@ namespace lxd
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public void Remove(string id)
+        {
+            IRestRequest request = new RestRequest($"{component}/{id}", Method.DELETE);
+            Client.API.Execute(request);
         }
     }
 }

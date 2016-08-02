@@ -2,6 +2,7 @@
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
@@ -14,7 +15,7 @@ namespace lxd
     {
         public bool Verify { get; private set; }
 
-        JsonNetSerializer jsonNetSerializer = new JsonNetSerializer();
+        public JsonNetSerializer Serializer = new JsonNetSerializer();
 
         public API(string apiEndpoint, X509Certificate2 clientCertificate, bool verify)
             : base(apiEndpoint)
@@ -35,15 +36,32 @@ namespace lxd
 
         public T Get<T>(string route)
         {
-            return Get(route).ToObject<T>(jsonNetSerializer.JsonSerializer);
+            return Get(route).ToObject<T>(Serializer.JsonSerializer);
         }
 
         public JToken Get(string route)
         {
-            Console.WriteLine(route);
+            Debug.WriteLine(DateTime.Now.ToString(), Method.GET, route);
 
             IRestRequest request = new RestRequest(route);
-            request.JsonSerializer = jsonNetSerializer;
+            request.JsonSerializer = Serializer;
+            IRestResponse response = base.Execute(request);
+            AssertResponse(response);
+
+            return JToken.Parse(response.Content).SelectToken("metadata");
+        }
+
+        public void Delete(string route)
+        {
+            IRestRequest request = new RestRequest(route, Method.DELETE);
+            IRestResponse response = base.Execute(request);
+            AssertResponse(response);
+        }
+
+        public JToken Post(string route, object payload)
+        {
+            IRestRequest request = new RestRequest(route, Method.POST);
+            request.JsonSerializer = Serializer;
             IRestResponse response = base.Execute(request);
             AssertResponse(response);
 

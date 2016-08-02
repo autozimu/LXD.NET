@@ -15,9 +15,9 @@ namespace lxd
 {
     public class Client
     {
-        const string Version = "1.0";
+        public const string Version = "1.0";
 
-        public API API { get; private set; }
+        public static API API { get; private set; }
 
         public bool Trusted => API.Get(Version).Value<string>("auth") == "trusted";
 
@@ -36,12 +36,12 @@ namespace lxd
             // Verify connection.
             API.Get(Version);
 
-            Certificates = new Collection<Certificate>($"{Version}/certificates", API);
-            Containers = new Collection<Container>($"{Version}/containers", API);
-            Images = new Collection<Image>($"{Version}/images", API);
-            Networks = new Collection<Network>($"{Version}/networks", API);
-            Operations = new Collection<Operation>($"{Version}/operations", API);
-            Profiles = new Collection<Profile>($"{Version}/profiles", API);
+            Certificates = new Collection<Certificate>($"{Version}/certificates");
+            Containers = new Collection<Container>($"{Version}/containers");
+            Images = new Collection<Image>($"{Version}/images");
+            Networks = new Collection<Network>($"{Version}/networks");
+            Operations = new Collection<Operation>($"{Version}/operations");
+            Profiles = new Collection<Profile>($"{Version}/profiles");
 
             // Task.Run(() => GetEventsAsync());
         }
