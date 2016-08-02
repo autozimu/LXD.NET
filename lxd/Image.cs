@@ -14,17 +14,17 @@ namespace lxd
         public bool Cached;
         public string Filename;
         public string Fingerprint;
-        public PropertiesStruct Properties;
+        public ImageProperties Properties;
         public bool Public;
         public int Size;
         public bool AutoUpdate;
-        public UpdateSourceStruct UpdateSource;
+        public ImageUpdateSource UpdateSource;
         public DateTime CreatedAt;
         public DateTime ExpiresAt;
         public DateTime LastUsedAt;
         public DateTime UploadedAt;
 
-        public struct PropertiesStruct
+        public struct ImageProperties
         {
             public string Architecture;
             public string Build;
@@ -33,7 +33,7 @@ namespace lxd
             public string Release;
         }
 
-        public struct UpdateSourceStruct
+        public struct ImageUpdateSource
         {
             public string Server;
             public string Protocol;
