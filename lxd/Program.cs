@@ -58,6 +58,7 @@ namespace lxd
 			response = client.Execute(request);
 
             string operationUrl = JToken.Parse(response.Content).Value<string>("operation");
+            Contract.Assert(operationUrl != null);
 
 			// Get fds secret.
 			request = new RestRequest(operationUrl);
