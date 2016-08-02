@@ -39,7 +39,8 @@ namespace lxd
             _serializer = new Newtonsoft.Json.JsonSerializer {
                 MissingMemberHandling = MissingMemberHandling.Ignore,
                 NullValueHandling = NullValueHandling.Include,
-                DefaultValueHandling = DefaultValueHandling.Include
+                DefaultValueHandling = DefaultValueHandling.Include,
+                ContractResolver = new PascalCasePropertyNamesContractResolver(),
             };
 		}
 
@@ -86,5 +87,7 @@ namespace lxd
 		/// Content type for serialized content
 		/// </summary>
 		public string ContentType { get; set; }
-	}
+
+        public Newtonsoft.Json.JsonSerializer JsonSerializer => _serializer;
+    }
 }
