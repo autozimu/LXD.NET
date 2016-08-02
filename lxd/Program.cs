@@ -29,18 +29,6 @@ namespace lxd
 
         static void Main(string[] args)
         {
-			// Bypass handshake error. LXD do not support TLS 1.3, while this is the default by .NET.
-			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
-			// Bypass self-signed certificate error.
-			ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyError) => true;
-            // Bypass slow proxy auto configuration.
-            WebRequest.DefaultWebProxy = null;
-
-            RestClient client = new RestClient($"https://{serviceAddr}");
-
-			// Add client certificate.
-			client.ClientCertificates = new X509CertificateCollection();
-			client.ClientCertificates.Add(new X509Certificate2("cert/client.p12"));
 
             RestRequest request;
             IRestResponse response;
