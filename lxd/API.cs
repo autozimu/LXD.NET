@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using NLog;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ namespace lxd
         public bool Verify { get; private set; }
 
         public JsonNetSerializer Serializer = new JsonNetSerializer();
+
+        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public API(string apiEndpoint, X509Certificate2 clientCertificate, bool verify)
             : base(apiEndpoint)
@@ -41,7 +44,7 @@ namespace lxd
 
         public JToken Get(string route)
         {
-            Debug.WriteLine(DateTime.Now.ToString(), Method.GET, route);
+            logger.Trace($"{Method.GET}  {route}");
 
             IRestRequest request = new RestRequest(route);
             request.JsonSerializer = Serializer;
@@ -53,6 +56,8 @@ namespace lxd
 
         public void Delete(string route)
         {
+            logger.Trace($"{Method.DELETE}  {route}");
+
             IRestRequest request = new RestRequest(route, Method.DELETE);
             IRestResponse response = base.Execute(request);
             AssertResponse(response);
@@ -60,6 +65,8 @@ namespace lxd
 
         public JToken Post(string route, object payload)
         {
+            logger.Trace($"{Method.POST}  {route}");
+
             IRestRequest request = new RestRequest(route, Method.POST);
             request.JsonSerializer = Serializer;
             IRestResponse response = base.Execute(request);
