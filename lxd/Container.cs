@@ -13,10 +13,10 @@ namespace lxd
         public string Architecture;
         public Dictionary<string, string> Config;
         public DateTime CreatedAt;
-        public Dictionary<string, Device> Devices;
+        public Dictionary<string, Dictionary<string, string>> Devices;
         public bool Ephemaral;
         public Dictionary<string, string> ExpandedConfig;
-        public Dictionary<string, Device> ExpandedDevices;
+        public Dictionary<string, Dictionary<string, string>> ExpandedDevices;
         public string Name;
         public string[] Profiles;
         public bool Stateful;
