@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
 
-namespace lxd
+namespace LXD
 {
     public class Collection<T> : IEnumerable<T>
     {

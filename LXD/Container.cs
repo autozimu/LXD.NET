@@ -7,9 +7,9 @@ using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
-using static lxd.Profile;
+using static LXD.Profile;
 
-namespace lxd
+namespace LXD
 {
     public struct Container
     {

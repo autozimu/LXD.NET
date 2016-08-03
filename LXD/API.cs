@@ -10,7 +10,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace lxd
+namespace LXD
 {
     public class API : RestClient
     {

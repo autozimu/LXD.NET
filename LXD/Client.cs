@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace lxd
+namespace LXD
 {
     public class Client
     {

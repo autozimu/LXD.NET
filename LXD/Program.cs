@@ -14,7 +14,7 @@ using System.Threading;
 using System.Net.WebSockets;
 using Newtonsoft.Json.Serialization;
 
-namespace lxd
+namespace LXD
 {
 	class ContainerExecDTO
 	{

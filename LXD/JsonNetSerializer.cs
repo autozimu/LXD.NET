@@ -21,7 +21,7 @@ using System.IO;
 using Newtonsoft.Json;
 using RestSharp.Serializers;
 
-namespace lxd
+namespace LXD
 {
 	/// <summary>
 	/// Default JSON serializer for request bodies
