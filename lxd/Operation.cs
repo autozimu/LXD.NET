@@ -6,8 +6,19 @@ using System.Threading.Tasks;
 
 namespace lxd
 {
-    // TODO
     public struct Operation
     {
+        public string Id;
+        public string Class;
+        public string CreatedAt;
+        public string UpdatedAt;
+        public string Status;
+        public int StatusCode;
+        public Dictionary<string, string[]> Resources;
+
+        // Metadata
+
+        public bool MayCancel;
+        public string Err;
     }
 }

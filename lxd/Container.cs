@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -34,9 +35,9 @@ namespace lxd
                 Stateful = stateful,
             };
 
-            Client.API.Put($"{Client.Version}/containers/{Name}/state", payload);
+            string operationUrl = Client.API.Put($"/{Client.Version}/containers/{Name}/state", payload).Value<string>("operation");
 
-            // TODO: wait for completion
+            Client.API.WaitForOperationComplete(operationUrl);
         }
 
         public void Stop(int timeout = 30, bool force = false, bool stateful = false)
@@ -49,7 +50,9 @@ namespace lxd
                 Stateful = stateful,
             };
 
-            Client.API.Put($"{Client.Version}/containers/{Name}/state", payload);
+            string operatioUrl = Client.API.Put($"/{Client.Version}/containers/{Name}/state", payload).Value<string>("operation");
+
+            Client.API.WaitForOperationComplete(operatioUrl);
         }
 
 
@@ -62,7 +65,9 @@ namespace lxd
                 Force = force,
             };
 
-            Client.API.Put($"{Client.Version}/container/{Name}/state", payload);
+            string operationUrl = Client.API.Put($"/{Client.Version}/container/{Name}/state", payload).Value<string>("operation");
+
+            Client.API.WaitForOperationComplete(operationUrl);
         }
 
         public void Freeze(int timeout = 30)
@@ -73,7 +78,9 @@ namespace lxd
                 Timeout = timeout,
             };
 
-            Client.API.Put($"{Client.Version}/container/{Name}/state", payload);
+            string operationUrl = Client.API.Put($"/{Client.Version}/container/{Name}/state", payload).Value<string>("operation");
+
+            Client.API.WaitForOperationComplete(operationUrl);
         }
 
         public void Unfreeze(int timeout = 30)
@@ -84,7 +91,9 @@ namespace lxd
                 Timeout = timeout,
             };
 
-            Client.API.Put($"{Client.Version}/container/{Name}/state", payload);
+            string operationUrl = Client.API.Put($"/{Client.Version}/container/{Name}/state", payload).Value<string>("operation");
+
+            Client.API.WaitForOperationComplete(operationUrl);
         }
 
         public struct ContainerStatePut
@@ -112,7 +121,7 @@ namespace lxd
                 Height = height,
             };
 
-            Client.API.Post($"{Client.Version}/containers/{Name}/exec", task);
+            Client.API.Post($"/{Client.Version}/containers/{Name}/exec", task);
 
             // TODO: return websockets.
             return null;
@@ -131,7 +140,7 @@ namespace lxd
 
         public string GetFile(string path)
         {
-            IRestRequest request = new RestRequest($"{Client.Version}/containers/{Name}/files");
+            IRestRequest request = new RestRequest($"/{Client.Version}/containers/{Name}/files");
             request.AddParameter("path", path);
             IRestResponse response = Client.API.Execute(request);
             return response.Content;
@@ -143,8 +152,8 @@ namespace lxd
             return;
         }
 
-        public ContainerState State => Client.API.Get<ContainerState>($"{Client.Version}/containers/{Name}/state");
-        public Collection<object> Logs => new Collection<object>($"{Client.Version}/containers/{Name}/logs");
-        public Collection<Container> Snapshots => new Collection<Container>($"{Client.Version}/containers/{Name}/snapshots");
+        public ContainerState State => Client.API.Get<ContainerState>($"/{Client.Version}/containers/{Name}/state");
+        public Collection<object> Logs => new Collection<object>($"/{Client.Version}/containers/{Name}/logs");
+        public Collection<Container> Snapshots => new Collection<Container>($"/{Client.Version}/containers/{Name}/snapshots");
     }
 }

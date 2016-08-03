@@ -32,10 +32,8 @@ namespace lxd
         {
             Client client = new Client(serviceAddr, "cert/client.p12", "", verify: false);
 
-            foreach (Image img in client.Images)
-            {
-                Console.WriteLine(img.Properties.Description);
-            }
+            client.Containers.First().Stop();
+
 
             Console.ReadKey();
 

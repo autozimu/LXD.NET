@@ -34,14 +34,14 @@ namespace lxd
             API = new API(apiEndpoint, clientCertificate, verify);
 
             // Verify connection.
-            API.Get(Version);
+            API.Get($"/{Version}");
 
-            Certificates = new Collection<Certificate>($"{Version}/certificates");
-            Containers = new Collection<Container>($"{Version}/containers");
-            Images = new Collection<Image>($"{Version}/images");
-            Networks = new Collection<Network>($"{Version}/networks");
-            Operations = new Collection<Operation>($"{Version}/operations");
-            Profiles = new Collection<Profile>($"{Version}/profiles");
+            Certificates = new Collection<Certificate>($"/{Version}/certificates");
+            Containers = new Collection<Container>($"/{Version}/containers");
+            Images = new Collection<Image>($"/{Version}/images");
+            Networks = new Collection<Network>($"/{Version}/networks");
+            Operations = new Collection<Operation>($"/{Version}/operations");
+            Profiles = new Collection<Profile>($"/{Version}/profiles");
 
             // Task.Run(() => GetEventsAsync());
         }
