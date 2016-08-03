@@ -13,20 +13,20 @@ namespace LXD
     {
         string component;
 
-        public string[] Ids => Client.API.Get(component).SelectToken("metadata").ToObject<string[]>();
+        public string[] IDs => Client.API.Get(component).SelectToken("metadata").ToObject<string[]>();
 
         public Collection(string component)
         {
             this.component = component;
         }
 
-        public int Count => Ids.Length;
+        public int Count => IDs.Length;
 
         public T this[int index]
         {
             get
             {
-                return this[Ids[index]];
+                return this[IDs[index]];
             }
             set { /* set the specified index to value here */ }
         }
@@ -42,7 +42,7 @@ namespace LXD
 
         public IEnumerator<T> GetEnumerator()
         {
-            foreach (string id in Ids)
+            foreach (string id in IDs)
             {
                 yield return this[id];
             }
