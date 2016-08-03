@@ -37,77 +37,15 @@ namespace lxd
             ClientCertificates.Add(clientCertificate);
         }
 
-        public T Get<T>(string resource)
+        public IRestResponse Execute(IRestRequest request, IEnumerable<HttpStatusCode> allowedStatusCodes = null)
         {
-            return Get(resource).SelectToken("metadata").ToObject<T>(Serializer.JsonSerializer);
-        }
-
-        public JToken Get(string resource)
-        {
-            IRestRequest request = new RestRequest(resource);
+            // Customize property name resolver.
             request.JsonSerializer = Serializer;
-            logger.Trace($"{request.Method}  {request.Resource}");
-            IRestResponse response = base.Execute(request);
-            AssertResponse(response);
-
-            return JToken.Parse(response.Content);
-        }
-
-        public void Delete(string resource)
-        {
-            IRestRequest request = new RestRequest(resource, Method.DELETE);
-            logger.Trace($"{request.Method}  {request.Resource}");
-            IRestResponse response = base.Execute(request);
-            AssertResponse(response);
-        }
-
-        public JToken Post(string resource, object payload)
-        {
-            IRestRequest request = new RestRequest(resource, Method.POST);
-            request.JsonSerializer = Serializer;
-            request.AddJsonBody(payload);
-            logger.Trace($"{request.Method}  {request.Resource}");
-            IRestResponse response = base.Execute(request);
-            AssertResponse(response);
-
-            return JToken.Parse(response.Content);
-        }
-
-        public JToken Put(string route, object payload)
-        {
-            IRestRequest request = new RestRequest(route, Method.PUT);
-            request.JsonSerializer = Serializer;
-            request.AddJsonBody(payload);
-            logger.Trace($"{request.Method}  {request.Resource}");
-            IRestResponse response = base.Execute(request);
-            AssertResponse(response, new[] { HttpStatusCode.Accepted });
-
-            return JToken.Parse(response.Content);
-        }
-
-        public void WaitForOperationComplete(string operationUrl, int timeout = 0)
-        {
-            IRestRequest request = new RestRequest($"{operationUrl}/wait");
-            request.JsonSerializer = Serializer;
-            if (timeout != 0)
-            {
-                request.AddParameter("timeout", timeout);
-            }
 
             logger.Trace($"{request.Method}  {request.Resource}");
+
             IRestResponse response = base.Execute(request);
-            AssertResponse(response);
 
-            Operation operation = JToken.Parse(response.Content).SelectToken("metadata").ToObject<Operation>(Serializer.JsonSerializer);
-
-            if (operation.StatusCode >= 400)
-            {
-                throw new LXDException(operation.Err);
-            }
-        }
-
-        void AssertResponse(IRestResponse response, IEnumerable<HttpStatusCode> allowedStatusCodes = null)
-        {
             if (response.ErrorException != null)
             {
                 throw response.ErrorException;
@@ -118,6 +56,63 @@ namespace lxd
             if (!allowedStatusCodes.Contains(response.StatusCode))
             {
                 throw new LXDException(response);
+            }
+
+            return response;
+        }
+
+        public T Get<T>(string resource)
+        {
+            return Get(resource).SelectToken("metadata").ToObject<T>(Serializer.JsonSerializer);
+        }
+
+        public JToken Get(string resource)
+        {
+            IRestRequest request = new RestRequest(resource);
+            IRestResponse response = Execute(request);
+
+            return JToken.Parse(response.Content);
+        }
+
+        public void Delete(string resource)
+        {
+            IRestRequest request = new RestRequest(resource, Method.DELETE);
+            IRestResponse response = Execute(request);
+        }
+
+        public JToken Post(string resource, object payload)
+        {
+            IRestRequest request = new RestRequest(resource, Method.POST);
+            request.AddJsonBody(payload);
+            IRestResponse response = Execute(request);
+
+            return JToken.Parse(response.Content);
+        }
+
+        public JToken Put(string route, object payload)
+        {
+            IRestRequest request = new RestRequest(route, Method.PUT);
+            request.AddJsonBody(payload);
+            IRestResponse response = Execute(request, new[] { HttpStatusCode.Accepted });
+
+            return JToken.Parse(response.Content);
+        }
+
+        public void WaitForOperationComplete(string operationUrl, int timeout = 0)
+        {
+            IRestRequest request = new RestRequest($"{operationUrl}/wait");
+            if (timeout != 0)
+            {
+                request.AddParameter("timeout", timeout);
+            }
+
+            IRestResponse response = Execute(request);
+
+            Operation operation = JToken.Parse(response.Content).SelectToken("metadata").ToObject<Operation>(Serializer.JsonSerializer);
+
+            if (operation.StatusCode >= 400)
+            {
+                throw new LXDException(operation.Err);
             }
         }
     }
