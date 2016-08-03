@@ -37,39 +37,36 @@ namespace lxd
             ClientCertificates.Add(clientCertificate);
         }
 
-        public T Get<T>(string route)
+        public T Get<T>(string resource)
         {
-            return Get(route).SelectToken("metadata").ToObject<T>(Serializer.JsonSerializer);
+            return Get(resource).SelectToken("metadata").ToObject<T>(Serializer.JsonSerializer);
         }
 
-        public JToken Get(string route)
+        public JToken Get(string resource)
         {
-            logger.Trace($"{Method.GET}  {route}");
-
-            IRestRequest request = new RestRequest(route);
+            IRestRequest request = new RestRequest(resource);
             request.JsonSerializer = Serializer;
+            logger.Trace($"{request.Method}  {request.Resource}");
             IRestResponse response = base.Execute(request);
             AssertResponse(response);
 
             return JToken.Parse(response.Content);
         }
 
-        public void Delete(string route)
+        public void Delete(string resource)
         {
-            logger.Trace($"{Method.DELETE}  {route}");
-
-            IRestRequest request = new RestRequest(route, Method.DELETE);
+            IRestRequest request = new RestRequest(resource, Method.DELETE);
+            logger.Trace($"{request.Method}  {request.Resource}");
             IRestResponse response = base.Execute(request);
             AssertResponse(response);
         }
 
-        public JToken Post(string route, object payload)
+        public JToken Post(string resource, object payload)
         {
-            logger.Trace($"{Method.POST}  {route}");
-
-            IRestRequest request = new RestRequest(route, Method.POST);
+            IRestRequest request = new RestRequest(resource, Method.POST);
             request.JsonSerializer = Serializer;
             request.AddJsonBody(payload);
+            logger.Trace($"{request.Method}  {request.Resource}");
             IRestResponse response = base.Execute(request);
             AssertResponse(response);
 
@@ -78,11 +75,10 @@ namespace lxd
 
         public JToken Put(string route, object payload)
         {
-            logger.Trace($"{Method.PUT}  {route}");
-
             IRestRequest request = new RestRequest(route, Method.PUT);
             request.JsonSerializer = Serializer;
             request.AddJsonBody(payload);
+            logger.Trace($"{request.Method}  {request.Resource}");
             IRestResponse response = base.Execute(request);
             AssertResponse(response, new[] { HttpStatusCode.Accepted });
 
@@ -91,8 +87,6 @@ namespace lxd
 
         public void WaitForOperationComplete(string operationUrl, int timeout = 0)
         {
-            logger.Trace($"{Method.GET} {operationUrl}");
-
             IRestRequest request = new RestRequest($"{operationUrl}/wait");
             request.JsonSerializer = Serializer;
             if (timeout != 0)
@@ -100,6 +94,7 @@ namespace lxd
                 request.AddParameter("timeout", timeout);
             }
 
+            logger.Trace($"{request.Method}  {request.Resource}");
             IRestResponse response = base.Execute(request);
             AssertResponse(response);
 
