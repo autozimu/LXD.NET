@@ -16,8 +16,6 @@ namespace lxd
     {
         public bool Verify { get; private set; }
 
-        public JsonNetSerializer Serializer = new JsonNetSerializer();
-
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public API(string apiEndpoint, X509Certificate2 clientCertificate, bool verify)
@@ -37,11 +35,8 @@ namespace lxd
             ClientCertificates.Add(clientCertificate);
         }
 
-        public IRestResponse Execute(IRestRequest request, IEnumerable<HttpStatusCode> allowedStatusCodes = null)
+        public override IRestResponse Execute(IRestRequest request)
         {
-            // Customize property name resolver.
-            request.JsonSerializer = Serializer;
-
             logger.Trace($"{request.Method}  {request.Resource}");
 
             IRestResponse response = base.Execute(request);
@@ -51,9 +46,7 @@ namespace lxd
                 throw response.ErrorException;
             }
 
-            allowedStatusCodes = allowedStatusCodes ?? new[] { HttpStatusCode.OK };
-
-            if (!allowedStatusCodes.Contains(response.StatusCode))
+            if (!IsSuccessStatusCode(response))
             {
                 throw new LXDException(response);
             }
@@ -63,12 +56,12 @@ namespace lxd
 
         public T Get<T>(string resource)
         {
-            return Get(resource).SelectToken("metadata").ToObject<T>(Serializer.JsonSerializer);
+            return Get(resource).SelectToken("metadata").ToObject<T>(new Serializer().JsonSerializer);
         }
 
         public JToken Get(string resource)
         {
-            IRestRequest request = new RestRequest(resource);
+            IRestRequest request = new Request(resource);
             IRestResponse response = Execute(request);
 
             return JToken.Parse(response.Content);
@@ -76,31 +69,31 @@ namespace lxd
 
         public void Delete(string resource)
         {
-            IRestRequest request = new RestRequest(resource, Method.DELETE);
+            IRestRequest request = new Request(resource, Method.DELETE);
             IRestResponse response = Execute(request);
         }
 
         public JToken Post(string resource, object payload)
         {
-            IRestRequest request = new RestRequest(resource, Method.POST);
+            IRestRequest request = new Request(resource, Method.POST);
             request.AddJsonBody(payload);
             IRestResponse response = Execute(request);
 
             return JToken.Parse(response.Content);
         }
 
-        public JToken Put(string route, object payload)
+        public JToken Put(string resource, object payload)
         {
-            IRestRequest request = new RestRequest(route, Method.PUT);
+            IRestRequest request = new Request(resource, Method.PUT);
             request.AddJsonBody(payload);
-            IRestResponse response = Execute(request, new[] { HttpStatusCode.Accepted });
+            IRestResponse response = Execute(request);
 
             return JToken.Parse(response.Content);
         }
 
         public void WaitForOperationComplete(string operationUrl, int timeout = 0)
         {
-            IRestRequest request = new RestRequest($"{operationUrl}/wait");
+            IRestRequest request = new Request($"{operationUrl}/wait");
             if (timeout != 0)
             {
                 request.AddParameter("timeout", timeout);
@@ -108,12 +101,17 @@ namespace lxd
 
             IRestResponse response = Execute(request);
 
-            Operation operation = JToken.Parse(response.Content).SelectToken("metadata").ToObject<Operation>(Serializer.JsonSerializer);
+            Operation operation = JToken.Parse(response.Content).SelectToken("metadata").ToObject<Operation>(new Serializer().JsonSerializer);
 
-            if (operation.StatusCode >= 400)
+            if (operation.StatusCode >= 400 && operation.StatusCode <= 599)
             {
                 throw new LXDException(operation.Err);
             }
+        }
+
+        bool IsSuccessStatusCode(IRestResponse response)
+        {
+            return (int)response.StatusCode >= 200 && (int)response.StatusCode <= 299;
         }
     }
 }

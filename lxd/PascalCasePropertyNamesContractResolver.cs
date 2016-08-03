@@ -10,6 +10,15 @@ namespace lxd
 {
     class PascalCasePropertyNamesContractResolver : DefaultContractResolver
     {
-        protected override string ResolvePropertyName(string propertyName) => propertyName.Underscore();
+        protected override string ResolvePropertyName(string propertyName)
+        {
+            if (char.IsLower(propertyName.First()))
+            {
+                // Property already have a customized name.
+                return propertyName;
+            }
+
+            return propertyName.Underscore();
+        }
     }
 }
