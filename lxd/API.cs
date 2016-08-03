@@ -75,6 +75,18 @@ namespace lxd
             return JToken.Parse(response.Content).SelectToken("metadata");
         }
 
+        public JToken Put(string route, object payload)
+        {
+            logger.Trace($"{Method.PUT}  {route}");
+
+            IRestRequest request = new RestRequest(route, Method.PUT);
+            request.JsonSerializer = Serializer;
+            IRestResponse response = base.Execute(request);
+            AssertResponse(response);
+
+            return JToken.Parse(response.Content).SelectToken("metadata");
+        }
+
         void AssertResponse(IRestResponse response, IEnumerable<HttpStatusCode> allowedStatusCodes = null)
         {
             if (response.ErrorException != null)

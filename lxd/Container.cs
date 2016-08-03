@@ -25,6 +25,76 @@ namespace lxd
         public string Status;
         public int StatusCode;
 
+        public void Start(int timeout = 30, bool stateful = false)
+        {
+            ContainerStatePut payload = new ContainerStatePut()
+            {
+                Action = "start",
+                Timeout = timeout,
+                Stateful = stateful,
+            };
+
+            Client.API.Put($"{Client.Version}/containers/{Name}/state", payload);
+
+            // TODO: wait for completion
+        }
+
+        public void Stop(int timeout = 30, bool force = false, bool stateful = false)
+        {
+            ContainerStatePut payload = new ContainerStatePut()
+            {
+                Action = "stop",
+                Timeout = timeout,
+                Force = force,
+                Stateful = stateful,
+            };
+
+            Client.API.Put($"{Client.Version}/containers/{Name}/state", payload);
+        }
+
+
+        public void Restart(int timeout = 30, bool force = false)
+        {
+            ContainerStatePut payload = new ContainerStatePut()
+            {
+                Action = "restart",
+                Timeout = timeout,
+                Force = force,
+            };
+
+            Client.API.Put($"{Client.Version}/container/{Name}/state", payload);
+        }
+
+        public void Freeze(int timeout = 30)
+        {
+            ContainerStatePut payload = new ContainerStatePut()
+            {
+                Action = "freeze",
+                Timeout = timeout,
+            };
+
+            Client.API.Put($"{Client.Version}/container/{Name}/state", payload);
+        }
+
+        public void Unfreeze(int timeout = 30)
+        {
+            ContainerStatePut payload = new ContainerStatePut()
+            {
+                Action = "unfreeze",
+                Timeout = timeout,
+            };
+
+            Client.API.Put($"{Client.Version}/container/{Name}/state", payload);
+        }
+
+        public struct ContainerStatePut
+        {
+            public string Action;
+            public int Timeout;
+            public bool Force;
+            public bool Stateful;
+        }
+
         public IEnumerable<ClientWebSocket> Exec(string[] command,
             Dictionary<string, string> environment = null,
             bool waitForWebSocket = false,
@@ -42,13 +112,13 @@ namespace lxd
                 Height = height,
             };
 
-            Client.API.Post($"{Client.Version}/{Name}/exec", task);
+            Client.API.Post($"{Client.Version}/containers/{Name}/exec", task);
 
             // TODO: return websockets.
             return null;
         }
 
-        struct ContainerExec
+        public struct ContainerExec
         {
             public string[] Command;
             public Dictionary<string, string> Environment;
@@ -61,7 +131,7 @@ namespace lxd
 
         public string GetFile(string path)
         {
-            IRestRequest request = new RestRequest($"{Client.Version}/{Name}/files");
+            IRestRequest request = new RestRequest($"{Client.Version}/containers/{Name}/files");
             request.AddParameter("path", path);
             IRestResponse response = Client.API.Execute(request);
             return response.Content;
@@ -73,8 +143,8 @@ namespace lxd
             return;
         }
 
-        public ContainerState State => Client.API.Get<ContainerState>($"{Client.Version}/{Name}/state");
-        public Collection<object> Logs => new Collection<object>($"{Client.Version}/{Name}/logs");
-        public Collection<Container> Snapshots => new Collection<Container>($"{Client.Version}/{Name}/snapshots");
+        public ContainerState State => Client.API.Get<ContainerState>($"{Client.Version}/containers/{Name}/state");
+        public Collection<object> Logs => new Collection<object>($"{Client.Version}/containers/{Name}/logs");
+        public Collection<Container> Snapshots => new Collection<Container>($"{Client.Version}/containers/{Name}/snapshots");
     }
 }
