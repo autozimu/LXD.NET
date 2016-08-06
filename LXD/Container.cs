@@ -35,9 +35,7 @@ namespace LXD
                 Stateful = stateful,
             };
 
-            string operationUrl = Client.API.Put($"/{Client.Version}/containers/{Name}/state", payload).Value<string>("operation");
-
-            Client.API.WaitForOperationComplete(operationUrl);
+            Client.API.Put($"/{Client.Version}/containers/{Name}/state", payload);
         }
 
         public void Stop(int timeout = 30, bool force = false, bool stateful = false)
@@ -50,9 +48,7 @@ namespace LXD
                 Stateful = stateful,
             };
 
-            string operatioUrl = Client.API.Put($"/{Client.Version}/containers/{Name}/state", payload).Value<string>("operation");
-
-            Client.API.WaitForOperationComplete(operatioUrl);
+            Client.API.Put($"/{Client.Version}/containers/{Name}/state", payload);
         }
 
 
@@ -65,9 +61,7 @@ namespace LXD
                 Force = force,
             };
 
-            string operationUrl = Client.API.Put($"/{Client.Version}/container/{Name}/state", payload).Value<string>("operation");
-
-            Client.API.WaitForOperationComplete(operationUrl);
+            Client.API.Put($"/{Client.Version}/container/{Name}/state", payload);
         }
 
         public void Freeze(int timeout = 30)
@@ -78,9 +72,7 @@ namespace LXD
                 Timeout = timeout,
             };
 
-            string operationUrl = Client.API.Put($"/{Client.Version}/container/{Name}/state", payload).Value<string>("operation");
-
-            Client.API.WaitForOperationComplete(operationUrl);
+            Client.API.Put($"/{Client.Version}/container/{Name}/state", payload);
         }
 
         public void Unfreeze(int timeout = 30)
@@ -91,9 +83,7 @@ namespace LXD
                 Timeout = timeout,
             };
 
-            string operationUrl = Client.API.Put($"/{Client.Version}/container/{Name}/state", payload).Value<string>("operation");
-
-            Client.API.WaitForOperationComplete(operationUrl);
+            Client.API.Put($"/{Client.Version}/container/{Name}/state", payload);
         }
 
         public struct ContainerStatePut
@@ -142,8 +132,9 @@ namespace LXD
         {
             IRestRequest request = new RestRequest($"/{Client.Version}/containers/{Name}/files");
             request.AddParameter("path", path);
-            IRestResponse response = Client.API.Execute(request);
-            return response.Content;
+            return "";
+            //IRestResponse response = Client.API.Execute(request);
+            //return response.Content;
         }
 
         // TODO: fill body.

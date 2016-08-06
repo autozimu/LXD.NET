@@ -13,7 +13,7 @@ namespace LXD
     {
         string component;
 
-        public string[] IDs => Client.API.Get(component).SelectToken("metadata").ToObject<string[]>();
+        public string[] IDs => Client.API.Get<string[]>(component);
 
         public Collection(string component)
         {

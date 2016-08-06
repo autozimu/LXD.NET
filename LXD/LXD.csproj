@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -77,6 +78,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Common.Logging, Version=3.3.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>packages\Common.Logging.3.3.0\lib\net40\Common.Logging.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Common.Logging.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>packages\Common.Logging.Core.3.3.0\lib\net40\Common.Logging.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Humanizer, Version=2.1.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
       <HintPath>packages\Humanizer.Core.2.1.0\lib\netstandard1.0\Humanizer.dll</HintPath>
       <Private>True</Private>
@@ -109,7 +118,8 @@
     <Compile Include="Container.cs" />
     <Compile Include="ContainerState.cs" />
     <Compile Include="Image.cs" />
-    <Compile Include="JsonNetSerializer.cs" />
+    <Compile Include="JsonSerializer.cs" />
+    <Compile Include="RestSharpSerializer.cs" />
     <Compile Include="LXDException.cs" />
     <Compile Include="Collection.cs" />
     <Compile Include="Network.cs" />

@@ -27,27 +27,22 @@ namespace LXD
 	/// Default JSON serializer for request bodies
 	/// Doesn't currently use the SerializeAs attribute, defers to Newtonsoft's attributes
 	/// </summary>
-	public class Serializer: ISerializer
+	public class RestSharpSerializer: ISerializer
 	{
 	    private readonly Newtonsoft.Json.JsonSerializer _serializer;
         
         /// <summary>
 		/// Default serializer
 		/// </summary>
-		public Serializer() {
+		public RestSharpSerializer() {
 			ContentType = "application/json";
-            _serializer = new Newtonsoft.Json.JsonSerializer {
-                MissingMemberHandling = MissingMemberHandling.Ignore,
-                NullValueHandling = NullValueHandling.Include,
-                DefaultValueHandling = DefaultValueHandling.Include,
-                ContractResolver = new PascalCasePropertyNamesContractResolver(),
-            };
+            _serializer = new JsonSerializer();
 		}
 
         /// <summary>
         /// Default serializer with overload for allowing custom Json.NET settings
         /// </summary>
-        public Serializer(Newtonsoft.Json.JsonSerializer serializer){
+        public RestSharpSerializer(Newtonsoft.Json.JsonSerializer serializer){
             ContentType = "application/json";
             _serializer = serializer;
         }

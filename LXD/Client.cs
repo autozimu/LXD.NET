@@ -19,7 +19,7 @@ namespace LXD
 
         public static API API { get; private set; }
 
-        public bool Trusted => API.Get(Version).Value<string>("auth") == "trusted";
+        public bool Trusted => API.Get($"/{Version}").Value<string>("auth") == "trusted";
 
         public Collection<Certificate> Certificates { get; private set; }
         public Collection<Container> Containers { get; private set; }

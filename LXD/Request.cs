@@ -12,13 +12,13 @@ namespace LXD
         public Request(string resouce)
             : base(resouce)
         {
-            JsonSerializer = new Serializer();
+            JsonSerializer = new RestSharpSerializer();
         }
 
         public Request(string resouce, Method method)
             : base(resouce, method)
         {
-            JsonSerializer = new Serializer();
+            JsonSerializer = new RestSharpSerializer();
         }
     }
 }
