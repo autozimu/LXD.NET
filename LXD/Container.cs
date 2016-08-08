@@ -131,7 +131,7 @@ namespace LXD
             if (interactive == true)
             {
                 string fdsSecret = response.SelectToken("metadata.metadata.fds.0").Value<string>();
-                string wsUrl = $"{Client.API.WebSocketAddr}{operationUrl}/websocket?secret={fdsSecret}";
+                string wsUrl = $"{Client.API.BaseUrlWebSocket}{operationUrl}/websocket?secret={fdsSecret}";
 
                 Task<string> task = Task.Run(() => ClientWebSocketExtensions.ReadAllLines(wsUrl));
                 string stdouterr = task.Result;

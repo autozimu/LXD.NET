@@ -19,8 +19,8 @@ namespace LXD
 
         private static Logger logger = LogManager.GetCurrentClassLogger();
 
-        public API(string apiEndpoint, X509Certificate2 clientCertificate, bool verify)
-            : base(apiEndpoint)
+        public API(string baseUrl, X509Certificate2 clientCertificate, bool verify)
+            : base(baseUrl)
         {
             // Bypass handshake error. LXD do not support TLS 1.3, while this is the default by .NET.
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
@@ -112,6 +112,6 @@ namespace LXD
             return (int)response.StatusCode >= 200 && (int)response.StatusCode <= 299;
         }
 
-        public string WebSocketAddr => BaseUrl.AbsoluteUri.Replace("http", "ws");
+        public string BaseUrlWebSocket => BaseUrl.AbsoluteUri.Replace("http", "ws");
     }
 }
