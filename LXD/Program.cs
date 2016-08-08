@@ -32,7 +32,12 @@ namespace LXD
         {
             Client client = new Client(serviceAddr, "cert/client.p12", "", verify: false);
 
-            client.Containers.First().Exec("cat /etc/issue".Split(' '));
+            Console.WriteLine(client.Trusted);
+
+            foreach (string str in client.Containers.First().Exec("cat /etc/issue".Split(' ')))
+            {
+                Console.WriteLine(str);
+            }
 
             Console.ReadKey();
 

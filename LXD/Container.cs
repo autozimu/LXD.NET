@@ -26,7 +26,7 @@ namespace LXD
         public string Status;
         public int StatusCode;
 
-        public void Start(int timeout = 30, bool stateful = false)
+        public JToken Start(int timeout = 30, bool stateful = false)
         {
             ContainerStatePut payload = new ContainerStatePut()
             {
@@ -35,10 +35,11 @@ namespace LXD
                 Stateful = stateful,
             };
 
-            Client.API.Put($"/{Client.Version}/containers/{Name}/state", payload);
+            JToken response = Client.API.Put($"/{Client.Version}/containers/{Name}/state", payload);
+            return Client.API.WaitForOperationComplete(response);
         }
 
-        public void Stop(int timeout = 30, bool force = false, bool stateful = false)
+        public JToken Stop(int timeout = 30, bool force = false, bool stateful = false)
         {
             ContainerStatePut payload = new ContainerStatePut()
             {
@@ -48,11 +49,12 @@ namespace LXD
                 Stateful = stateful,
             };
 
-            Client.API.Put($"/{Client.Version}/containers/{Name}/state", payload);
+            JToken response = Client.API.Put($"/{Client.Version}/containers/{Name}/state", payload);
+            return Client.API.WaitForOperationComplete(response);
         }
 
 
-        public void Restart(int timeout = 30, bool force = false)
+        public JToken Restart(int timeout = 30, bool force = false)
         {
             ContainerStatePut payload = new ContainerStatePut()
             {
@@ -61,10 +63,11 @@ namespace LXD
                 Force = force,
             };
 
-            Client.API.Put($"/{Client.Version}/container/{Name}/state", payload);
+            JToken response = Client.API.Put($"/{Client.Version}/container/{Name}/state", payload);
+            return Client.API.WaitForOperationComplete(response);
         }
 
-        public void Freeze(int timeout = 30)
+        public JToken Freeze(int timeout = 30)
         {
             ContainerStatePut payload = new ContainerStatePut()
             {
@@ -72,10 +75,11 @@ namespace LXD
                 Timeout = timeout,
             };
 
-            Client.API.Put($"/{Client.Version}/container/{Name}/state", payload);
+            JToken response = Client.API.Put($"/{Client.Version}/container/{Name}/state", payload);
+            return Client.API.WaitForOperationComplete(response);
         }
 
-        public void Unfreeze(int timeout = 30)
+        public JToken Unfreeze(int timeout = 30)
         {
             ContainerStatePut payload = new ContainerStatePut()
             {
@@ -83,7 +87,8 @@ namespace LXD
                 Timeout = timeout,
             };
 
-            Client.API.Put($"/{Client.Version}/container/{Name}/state", payload);
+            JToken response = Client.API.Put($"/{Client.Version}/container/{Name}/state", payload);
+            return Client.API.WaitForOperationComplete(response);
         }
 
         public struct ContainerStatePut
@@ -94,27 +99,53 @@ namespace LXD
             public bool Stateful;
         }
 
-        public IEnumerable<ClientWebSocket> Exec(string[] command,
+        public IEnumerable<string> Exec(string[] command,
             Dictionary<string, string> environment = null,
-            bool waitForWebSocket = false,
+            bool waitForWebSocket = true,
             bool interactive = true,
             int width = 80,
             int height = 25
             )
         {
-            ContainerExec task = new ContainerExec()
+            ContainerExec exec = new ContainerExec()
             {
                 Command = command,
                 Environment = environment,
                 WaitForWebSocket = waitForWebSocket,
+                Interactive = interactive,
                 Width = width,
                 Height = height,
             };
 
-            Client.API.Post($"/{Client.Version}/containers/{Name}/exec", task);
+            JToken response = Client.API.Post($"/{Client.Version}/containers/{Name}/exec", exec);
+            string operationUrl = response.Value<string>("operation");
+            if (waitForWebSocket == false)
+            {
+                Client.API.WaitForOperationComplete(response);
+                // wait-for-websocket is false. Nothing to return.
+                return null;
+            }
 
-            // TODO: return websockets.
-            return null;
+            response = Client.API.Get(operationUrl);
+
+            if (interactive == true)
+            {
+                string fdsSecret = response.SelectToken("metadata.metadata.fds.0").Value<string>();
+                string wsUrl = $"{Client.API.WebSocketAddr}{operationUrl}/websocket?secret={fdsSecret}";
+
+                Task<string> task = Task.Run(() => ClientWebSocketExtensions.ReadAllLines(wsUrl));
+                string stdouterr = task.Result;
+
+                // interactive is true, return pty output.
+                return new[] { stdouterr };
+            }
+            else
+            {
+                string[] fdsSecrets = response.SelectToken("metadata.metadata.fds").Value<string[]>();
+                // TODO.
+
+                return null;
+            }
         }
 
         public struct ContainerExec

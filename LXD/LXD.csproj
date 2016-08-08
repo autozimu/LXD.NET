@@ -115,10 +115,12 @@
     <Compile Include="API.cs" />
     <Compile Include="Certificate.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="ClientWebSocketExtensions.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="ContainerState.cs" />
     <Compile Include="Image.cs" />
     <Compile Include="JsonSerializer.cs" />
+    <Compile Include="JTokenExtensions.cs" />
     <Compile Include="RestSharpSerializer.cs" />
     <Compile Include="LXDException.cs" />
     <Compile Include="Collection.cs" />

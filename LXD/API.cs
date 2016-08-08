@@ -9,6 +9,7 @@ using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics.Contracts;
 
 namespace LXD
 {
@@ -60,27 +61,14 @@ namespace LXD
                 throw new LXDException(response);
             }
 
-            return responseJToken.SelectToken("metadata");
+            return responseJToken;
         }
 
-        public JToken ExecuteAndWait(IRestRequest request, int timeout = 0)
+        public JToken WaitForOperationComplete(JToken response, int timeout = 0)
         {
-            JToken response = Execute(request);
+            Contract.Assert(response.Value<string>("type") == "async");
+            string operationUrl = response.Value<string>("operation");
 
-            string type = response.Value<string>("type");
-            if (type == "async")
-            {
-                string operationURL = response.Value<string>("operation");
-                return WaitForOperationComplete(operationURL);
-            }
-            else
-            {
-                return response;
-            }
-        }
-
-        public JToken WaitForOperationComplete(string operationUrl, int timeout = 0)
-        {
             IRestRequest request = new Request($"{operationUrl}/wait");
             if (timeout != 0)
             {
@@ -97,39 +85,33 @@ namespace LXD
 
         public T Get<T>(string resource)
         {
-            return Execute(new Request(resource)).ToObjectLXDSerialzier<T>();
+            return Get(resource).SelectToken("metadata").ToObjectLXDSerialzier<T>();
         }
 
         public JToken Delete(string resource)
         {
-            return ExecuteAndWait(new Request(resource, Method.DELETE));
+            return Execute(new Request(resource, Method.DELETE));
         }
 
         public JToken Post(string resource, object payload)
         {
             IRestRequest request = new Request(resource, Method.POST);
             request.AddJsonBody(payload);
-            return ExecuteAndWait(request);
+            return Execute(request);
         }
 
         public JToken Put(string resource, object payload)
         {
             IRestRequest request = new Request(resource, Method.PUT);
             request.AddJsonBody(payload);
-            return ExecuteAndWait(request);
+            return Execute(request);
         }
 
         bool IsSuccessStatusCode(IRestResponse response)
         {
             return (int)response.StatusCode >= 200 && (int)response.StatusCode <= 299;
         }
-    }
 
-    public static class JTokenExtensions
-    {
-        public static T ToObjectLXDSerialzier<T>(this JToken token)
-        {
-            return token.ToObject<T>(new JsonSerializer());
-        }
+        public string WebSocketAddr => BaseUrl.AbsoluteUri.Replace("http", "ws");
     }
 }
