@@ -17,7 +17,8 @@ namespace LXD
     {
         public const string Version = "1.0";
 
-        public static API API { get; private set; }
+        [ThreadStatic]
+        public static API API;
 
         public bool Trusted => API.Get($"/{Version}").SelectToken("metadata.auth").Value<string>() == "trusted";
 
