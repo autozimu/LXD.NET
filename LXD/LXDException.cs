@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics.Contracts;
 
 namespace LXD
 {
@@ -15,11 +16,14 @@ namespace LXD
         public LXDException(string message)
             : base(message)
         {
+            Contract.Requires(message != null);
         }
 
         public LXDException(IRestResponse response)
             : base(JToken.Parse(response.Content).Value<string>("error"))
         {
+            Contract.Requires(response != null);
+
             Response = response;
         }
     }

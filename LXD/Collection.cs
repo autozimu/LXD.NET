@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
+using System.Diagnostics.Contracts;
 
 namespace LXD
 {
@@ -26,6 +27,8 @@ namespace LXD
         {
             get
             {
+                Contract.Requires(index >= 0);
+
                 return this[IDs[index]];
             }
             set { /* set the specified index to value here */ }

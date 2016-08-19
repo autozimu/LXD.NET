@@ -22,6 +22,8 @@ namespace LXD
         public API(string baseUrl, X509Certificate2 clientCertificate, bool verify)
             : base(baseUrl)
         {
+            Contract.Requires(baseUrl != null);
+
             // Bypass handshake error. LXD do not support TLS 1.3, while this is the default by .NET.
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
 
@@ -38,6 +40,8 @@ namespace LXD
 
         public new JToken Execute(IRestRequest request)
         {
+            Contract.Requires(request != null);
+
             logger.Trace($"{request.Method}  {request.Resource}");
 
             IRestResponse response = base.Execute(request);
@@ -66,6 +70,7 @@ namespace LXD
 
         public JToken WaitForOperationComplete(JToken response, int timeout = 0)
         {
+            Contract.Requires(response != null);
             Contract.Assert(response.Value<string>("type") == "async");
             string operationUrl = response.Value<string>("operation");
 
