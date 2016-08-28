@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using NLog;
 using RestSharp;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
@@ -10,8 +9,6 @@ namespace LXD
     public class API : RestClient
     {
         public bool Verify { get; private set; }
-
-        private static Logger logger = LogManager.GetCurrentClassLogger();
 
         public API(string baseUrl, X509Certificate2 clientCertificate, bool verify)
             : base(baseUrl)
@@ -35,8 +32,6 @@ namespace LXD
         public new JToken Execute(IRestRequest request)
         {
             Contract.Requires(request != null);
-
-            logger.Trace($"{request.Method}  {request.Resource}");
 
             IRestResponse response = base.Execute(request);
 
