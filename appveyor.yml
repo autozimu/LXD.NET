@@ -1,3 +1,10 @@
 version: '0.1.0.{build}'
 
 before_build: nuget restore LXD
+
+build:
+    publish_nuget: true
+    include_nuget_references: true
+
+artifacts:
+    - path: LXD/LXD.*.nupkg
