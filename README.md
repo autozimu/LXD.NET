@@ -1,4 +1,5 @@
 # LXD.NET
+[![Build status](https://ci.appveyor.com/api/projects/status/d9hk73a1opdlhxp9?svg=true)](https://ci.appveyor.com/project/JunfengLi/lxd-net)
 
 LXD client implemented in C#.
 
