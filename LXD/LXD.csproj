@@ -7,8 +7,8 @@
     <ProjectGuid>{CA02C049-29CB-483B-902D-39C917D82C4D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>lxd</RootNamespace>
-    <AssemblyName>lxd</AssemblyName>
+    <RootNamespace>LXD</RootNamespace>
+    <AssemblyName>LXD</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
