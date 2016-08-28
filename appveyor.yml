@@ -14,3 +14,9 @@ build:
 
 artifacts:
     - path: LXD/LXD.*.nupkg
+
+deploy:
+    provider: NuGet
+    api_key:
+        secure: iOYzFt4VurzWRwsRIwA4x2nCHzWfP3Y3re/8nnR2h+GTMbun6vyzvnqMpPKvwuwb
+    artifacts: LXD/LXD.*.nupkg
