@@ -34,7 +34,12 @@ namespace LXD
 
             Console.WriteLine(client.Trusted);
 
-            foreach (string str in client.Containers.First().Exec("cat /etc/issue".Split(' ')))
+            foreach (Domain.Container container in client.Containers)
+            {
+                Console.WriteLine(container.Name);
+            }
+
+            foreach (string str in client.Containers.First().Exec(new[] {"cat", "/etc/issue" }))
             {
                 Console.WriteLine(str);
             }
