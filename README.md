@@ -8,9 +8,9 @@ LXD client implemented in C#.
 using LXD;
 
 Client client = new Client(
-    apiEndpoint: "https://lxd:8443",
-    clientCertificateFilename: "client.p12",
-    password: "");
+    apiEndpoint: "https://your-lxd-service:8443",
+    clientCertificateFilename: "your-client-certificate.p12",
+    password: "your-client-certificate-password");
 
 Console.WriteLine(client.Trusted); // true
 
