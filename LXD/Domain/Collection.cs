@@ -1,14 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
-using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Collections;
 using System.Diagnostics.Contracts;
+using RestSharp;
 
-namespace LXD
+namespace LXD.Domain
 {
     public class Collection<T> : IEnumerable<T>
     {

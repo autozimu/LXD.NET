@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LXD
+namespace LXD.Domain
 {
     public struct ContainerState
     {

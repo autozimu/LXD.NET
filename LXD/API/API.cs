@@ -1,14 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
 using NLog;
 using RestSharp;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics.Contracts;
 
 namespace LXD

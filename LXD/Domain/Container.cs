@@ -3,13 +3,9 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.WebSockets;
-using System.Text;
 using System.Threading.Tasks;
-using static LXD.Profile;
 
-namespace LXD
+namespace LXD.Domain
 {
     public struct Container
     {

@@ -129,25 +129,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API.cs" />
-    <Compile Include="Certificate.cs" />
+    <Compile Include="API\API.cs" />
+    <Compile Include="Domain\Certificate.cs" />
     <Compile Include="Client.cs" />
-    <Compile Include="ClientWebSocketExtensions.cs" />
-    <Compile Include="Container.cs" />
-    <Compile Include="ContainerState.cs" />
-    <Compile Include="Image.cs" />
-    <Compile Include="JsonSerializer.cs" />
-    <Compile Include="JTokenExtensions.cs" />
-    <Compile Include="RestSharpSerializer.cs" />
+    <Compile Include="Util\ClientWebSocketExtensions.cs" />
+    <Compile Include="Domain\Container.cs" />
+    <Compile Include="Domain\ContainerState.cs" />
+    <Compile Include="Domain\Image.cs" />
+    <Compile Include="Util\JsonSerializer.cs" />
+    <Compile Include="Util\JTokenExtensions.cs" />
+    <Compile Include="API\RestSharpSerializer.cs" />
     <Compile Include="LXDException.cs" />
-    <Compile Include="Collection.cs" />
-    <Compile Include="Network.cs" />
-    <Compile Include="Operation.cs" />
-    <Compile Include="PascalCasePropertyNamesContractResolver.cs" />
-    <Compile Include="Profile.cs" />
+    <Compile Include="Domain\Collection.cs" />
+    <Compile Include="Domain\Network.cs" />
+    <Compile Include="Domain\Operation.cs" />
+    <Compile Include="Util\PascalCasePropertyNamesContractResolver.cs" />
+    <Compile Include="Domain\Profile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Request.cs" />
+    <Compile Include="API\Request.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
