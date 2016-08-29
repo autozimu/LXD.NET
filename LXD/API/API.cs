@@ -25,8 +25,11 @@ namespace LXD
                 ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyError) => true;
             }
 
-            ClientCertificates = new X509CertificateCollection();
-            ClientCertificates.Add(clientCertificate);
+            if (clientCertificate != null)
+            {
+                ClientCertificates = new X509CertificateCollection();
+                ClientCertificates.Add(clientCertificate);
+            }
         }
 
         public new JToken Execute(IRestRequest request)

@@ -48,6 +48,11 @@ namespace LXD
         {
         }
 
+        public Client(string apiEndpoint, bool verify = false)
+            : this(apiEndpoint, null, verify)
+        {
+        }
+
         public delegate void NewEventHandler(object sender, EventArgs e);
 
         public event NewEventHandler NewEvent;
