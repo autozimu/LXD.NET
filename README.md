@@ -1,7 +1,15 @@
 # LXD.NET
 [![Build status](https://ci.appveyor.com/api/projects/status/d9hk73a1opdlhxp9?svg=true)](https://ci.appveyor.com/project/JunfengLi/lxd-net)
 
-LXD client implemented in C#.
+[LXD](http://www.ubuntu.com/cloud/lxd) client implemented in C#.
+
+# Usage
+
+This module is available as a [NuGet package](https://www.nuget.org/packages/LXD/). One can install it using NuGet Package Console window,
+
+```
+PM> Install-Package LXD
+```
 
 # Example
 
