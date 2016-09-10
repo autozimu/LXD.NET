@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
+using System.Threading.Tasks;
 
 namespace LXDTests
 {
@@ -21,11 +23,19 @@ namespace LXDTests
         [TestMethod]
         public void Container_ExecSimpleCommand()
         {
-            IEnumerable<string> outputs = client.Containers[0].Exec(new[] { "uname" });
+            IEnumerable<ClientWebSocket> wss = client.Containers[0].Exec(new[] { "uname" });
+            string stdouterr = Task.Run(() => wss.First().ReadAllLines()).Result;
 
-            CollectionAssert.AreEqual(
-                new[] { "Linux\r\n" },
-                outputs.ToArray());
+            Assert.AreEqual("Linux\r\n", stdouterr);
+        }
+
+        [TestMethod]
+        public void Container_ExecNonInteractiveCommand()
+        {
+            IEnumerable<ClientWebSocket> wss = client.Containers[0].Exec(new[] { "uname" }, interactive: false);
+            string stdout = Task.Run(() => wss.Skip(1).First().ReadAllLines()).Result;
+
+            Assert.AreEqual("Linux\r\n", stdout);
         }
     }
 }

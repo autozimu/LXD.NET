@@ -3,6 +3,8 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.WebSockets;
 using System.Threading.Tasks;
 
 namespace LXD.Domain
@@ -95,7 +97,7 @@ namespace LXD.Domain
             public bool Stateful;
         }
 
-        public IEnumerable<string> Exec(string[] command,
+        public IEnumerable<ClientWebSocket> Exec(string[] command,
             Dictionary<string, string> environment = null,
             bool waitForWebSocket = true,
             bool interactive = true,
@@ -123,24 +125,19 @@ namespace LXD.Domain
 
             response = API.Get(operationUrl);
 
-            if (interactive == true)
+            int fdsN = interactive ? 1 : 3;
+
+            List<Task<ClientWebSocket>> tasks = new List<Task<ClientWebSocket>>();
+            for (int i = 0; i < fdsN; i++)
             {
-                string fdsSecret = response.SelectToken("metadata.metadata.fds.0").Value<string>();
+                string fdsSecret = response.SelectToken($"metadata.metadata.fds.{i}").Value<string>();
                 string wsUrl = $"{API.BaseUrlWebSocket}{operationUrl}/websocket?secret={fdsSecret}";
-
-                Task<string> task = Task.Run(() => WebSocket.ReadAllLines(wsUrl));
-                string stdouterr = task.Result;
-
-                // interactive is true, return pty output.
-                return new[] { stdouterr };
+                Task<ClientWebSocket> task = ClientWebSocketExtensions.CreateAndConnect(wsUrl);
+                tasks.Add(task);
             }
-            else
-            {
-                string[] fdsSecrets = response.SelectToken("metadata.metadata.fds").Value<string[]>();
-                // TODO.
+            Task.WaitAll(tasks.ToArray());
 
-                return null;
-            }
+            return tasks.Select(t => t.Result);
         }
 
         public struct ContainerExec
