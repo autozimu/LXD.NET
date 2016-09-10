@@ -9,14 +9,14 @@ namespace LXD
 {
     public static class ClientWebSocketExtensions
     {
-        public static async Task<ClientWebSocket> CreateAndConnect(string url)
+        public static async Task<ClientWebSocket> CreateAndConnectAsync(string url)
         {
             ClientWebSocket ws = new ClientWebSocket();
             await ws.ConnectAsync(new Uri(url), CancellationToken.None);
             return ws;
         }
 
-        public static async Task<string> ReadAllLines(this ClientWebSocket ws)
+        public static async Task<string> ReadLinesAsync(this ClientWebSocket ws)
         {
 			StringBuilder sb = new StringBuilder();
 

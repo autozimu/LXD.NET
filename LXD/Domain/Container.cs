@@ -132,7 +132,7 @@ namespace LXD.Domain
             {
                 string fdsSecret = response.SelectToken($"metadata.metadata.fds.{i}").Value<string>();
                 string wsUrl = $"{API.BaseUrlWebSocket}{operationUrl}/websocket?secret={fdsSecret}";
-                Task<ClientWebSocket> task = ClientWebSocketExtensions.CreateAndConnect(wsUrl);
+                Task<ClientWebSocket> task = ClientWebSocketExtensions.CreateAndConnectAsync(wsUrl);
                 tasks.Add(task);
             }
             Task.WaitAll(tasks.ToArray());

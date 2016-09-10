@@ -24,7 +24,7 @@ namespace LXDTests
         public void Container_ExecSimpleCommand()
         {
             IEnumerable<ClientWebSocket> wss = client.Containers[0].Exec(new[] { "uname" });
-            string stdouterr = Task.Run(() => wss.First().ReadAllLines()).Result;
+            string stdouterr = Task.Run(() => wss.First().ReadLinesAsync()).Result;
 
             Assert.AreEqual("Linux\r\n", stdouterr);
         }
@@ -33,9 +33,15 @@ namespace LXDTests
         public void Container_ExecNonInteractiveCommand()
         {
             IEnumerable<ClientWebSocket> wss = client.Containers[0].Exec(new[] { "uname" }, interactive: false);
-            string stdout = Task.Run(() => wss.Skip(1).First().ReadAllLines()).Result;
+            string stdout = Task.Run(() => wss.Skip(1).First().ReadLinesAsync()).Result;
 
             Assert.AreEqual("Linux\n", stdout);
+        }
+
+        [TestMethod]
+        public void Container_ExecCommandWithInput()
+        {
+            IEnumerable<ClientWebSocket> wss = client.Containers[0].Exec(new[] { "cat" });
         }
     }
 }
