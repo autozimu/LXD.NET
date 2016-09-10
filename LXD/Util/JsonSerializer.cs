@@ -2,7 +2,7 @@
 
 namespace LXD
 {
-    public class JsonSerializer : Newtonsoft.Json.JsonSerializer
+    class JsonSerializer : Newtonsoft.Json.JsonSerializer
     {
         public JsonSerializer()
             : base()
