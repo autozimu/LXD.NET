@@ -100,8 +100,7 @@ namespace LXD.Domain
             bool waitForWebSocket = true,
             bool interactive = true,
             int width = 80,
-            int height = 25
-            )
+            int height = 25)
         {
             ContainerExec exec = new ContainerExec()
             {

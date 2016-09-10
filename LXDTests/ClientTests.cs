@@ -27,5 +27,45 @@ namespace LXDTests
 
             Assert.AreEqual(false, unauthClient.Trusted);
         }
+
+        [TestMethod]
+        public void Certificates_ShouldBeCollection()
+        {
+            Assert.IsTrue(client.Certificates.Count >= 0);
+        }
+
+        [TestMethod]
+        public void Containers_ShouldBeCollection()
+        {
+            Assert.IsTrue(client.Containers.Count >= 0);
+        }
+
+        [TestMethod]
+        public void Images_ShouldBeCollection()
+        {
+            Assert.IsTrue(client.Images.Count >= 0);
+        }
+
+        [TestMethod]
+        public void Networks_ShouldBeCollection()
+        {
+            Assert.IsTrue(client.Networks.Count >= 0);
+        }
+
+        // Disable for now.
+        // Right now, `/operations` API returns `{}` when there is no operations in queue,
+        // which should actually be `[]`.
+        [TestMethod]
+        [Ignore]
+        public void Operations_ShouldBeCollection()
+        {
+            Assert.IsTrue(client.Operations.Count >= 0);
+        }
+
+        [TestMethod]
+        public void Profiles_ShouldBeCollection()
+        {
+            Assert.IsTrue(client.Profiles.Count >= 0);
+        }
     }
 }
