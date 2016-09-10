@@ -35,7 +35,7 @@ namespace LXDTests
             IEnumerable<ClientWebSocket> wss = client.Containers[0].Exec(new[] { "uname" }, interactive: false);
             string stdout = Task.Run(() => wss.Skip(1).First().ReadAllLines()).Result;
 
-            Assert.AreEqual("Linux\r\n", stdout);
+            Assert.AreEqual("Linux\n", stdout);
         }
     }
 }
