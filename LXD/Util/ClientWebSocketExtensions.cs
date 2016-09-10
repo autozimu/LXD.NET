@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LXD
 {
-    static class ClientWebSocketExtensions
+    static class WebSocket
     {
         public static async Task<string> ReadAllLines(string url)
         {

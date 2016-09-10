@@ -128,7 +128,7 @@ namespace LXD.Domain
                 string fdsSecret = response.SelectToken("metadata.metadata.fds.0").Value<string>();
                 string wsUrl = $"{API.BaseUrlWebSocket}{operationUrl}/websocket?secret={fdsSecret}";
 
-                Task<string> task = Task.Run(() => ClientWebSocketExtensions.ReadAllLines(wsUrl));
+                Task<string> task = Task.Run(() => WebSocket.ReadAllLines(wsUrl));
                 string stdouterr = task.Result;
 
                 // interactive is true, return pty output.
