@@ -3,6 +3,7 @@ using RestSharp;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Diagnostics.Contracts;
+using LXD.Domain;
 
 namespace LXD
 {
@@ -82,7 +83,8 @@ namespace LXD
 
         public T Get<T>(string resource)
         {
-            return Get(resource).SelectToken("metadata").ToObjectLXDSerialzier<T>();
+            JToken jtoken = Get(resource).SelectToken("metadata");
+            return ConvertToDomainObject<T>(jtoken);
         }
 
         public JToken Delete(string resource)
@@ -104,11 +106,24 @@ namespace LXD
             return Execute(request);
         }
 
+        public string BaseUrlWebSocket => BaseUrl.AbsoluteUri.Replace("http", "ws");
+
         bool IsSuccessStatusCode(IRestResponse response)
         {
             return (int)response.StatusCode >= 200 && (int)response.StatusCode <= 299;
         }
 
-        public string BaseUrlWebSocket => BaseUrl.AbsoluteUri.Replace("http", "ws");
+        T ConvertToDomainObject<T>(JToken token)
+        {
+            Contract.Requires(token != null);
+
+            T obj = token.ToObject<T>(new JsonSerializer());
+            if (obj is RemoteObject)
+            {
+                (obj as RemoteObject).API = this;
+            }
+
+            return obj;
+        }
     }
 }

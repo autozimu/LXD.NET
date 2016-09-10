@@ -5,14 +5,15 @@ using RestSharp;
 
 namespace LXD.Domain
 {
-    public class Collection<T> : IEnumerable<T>
+    public class Collection<T> : RemoteObject, IEnumerable<T>
     {
         string component;
 
-        public string[] IDs => Client.API.Get<string[]>(component);
+        public string[] IDs => API.Get<string[]>(component);
 
-        public Collection(string component)
+        public Collection(API API, string component)
         {
+            this.API = API;
             this.component = component;
         }
 
@@ -33,7 +34,7 @@ namespace LXD.Domain
         {
             get
             {
-                return Client.API.Get<T>(id);
+                return API.Get<T>(id);
             }
             set { /* set the specified index to value here */ }
         }
@@ -54,7 +55,7 @@ namespace LXD.Domain
         public void Remove(string id)
         {
             IRestRequest request = new RestRequest($"{component}/{id}", Method.DELETE);
-            Client.API.Execute(request);
+            API.Execute(request);
         }
     }
 }

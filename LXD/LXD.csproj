@@ -123,12 +123,13 @@
     <Compile Include="API\API.cs" />
     <Compile Include="Domain\Certificate.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="Domain\RemoteObject.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Util\ClientWebSocketExtensions.cs" />
     <Compile Include="Domain\Container.cs" />
     <Compile Include="Domain\ContainerState.cs" />
     <Compile Include="Domain\Image.cs" />
     <Compile Include="Util\JsonSerializer.cs" />
-    <Compile Include="Util\JTokenExtensions.cs" />
     <Compile Include="API\RestSharpSerializer.cs" />
     <Compile Include="LXDException.cs" />
     <Compile Include="Domain\Collection.cs" />

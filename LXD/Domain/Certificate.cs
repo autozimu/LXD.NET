@@ -2,7 +2,7 @@
 
 namespace LXD.Domain
 {
-    public struct Certificate
+    public class Certificate : RemoteObject
     {
         [JsonProperty("certificate")]
         public string Content;

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LXD.Domain
 {
-    public struct Container
+    public class Container : RemoteObject
     {
         public string Architecture;
         public Dictionary<string, string> Config;
@@ -31,8 +31,8 @@ namespace LXD.Domain
                 Stateful = stateful,
             };
 
-            JToken response = Client.API.Put($"/{Client.Version}/containers/{Name}/state", payload);
-            return Client.API.WaitForOperationComplete(response);
+            JToken response = API.Put($"/{Client.Version}/containers/{Name}/state", payload);
+            return API.WaitForOperationComplete(response);
         }
 
         public JToken Stop(int timeout = 30, bool force = false, bool stateful = false)
@@ -45,8 +45,8 @@ namespace LXD.Domain
                 Stateful = stateful,
             };
 
-            JToken response = Client.API.Put($"/{Client.Version}/containers/{Name}/state", payload);
-            return Client.API.WaitForOperationComplete(response);
+            JToken response = API.Put($"/{Client.Version}/containers/{Name}/state", payload);
+            return API.WaitForOperationComplete(response);
         }
 
 
@@ -59,8 +59,8 @@ namespace LXD.Domain
                 Force = force,
             };
 
-            JToken response = Client.API.Put($"/{Client.Version}/container/{Name}/state", payload);
-            return Client.API.WaitForOperationComplete(response);
+            JToken response = API.Put($"/{Client.Version}/container/{Name}/state", payload);
+            return API.WaitForOperationComplete(response);
         }
 
         public JToken Freeze(int timeout = 30)
@@ -71,8 +71,8 @@ namespace LXD.Domain
                 Timeout = timeout,
             };
 
-            JToken response = Client.API.Put($"/{Client.Version}/container/{Name}/state", payload);
-            return Client.API.WaitForOperationComplete(response);
+            JToken response = API.Put($"/{Client.Version}/container/{Name}/state", payload);
+            return API.WaitForOperationComplete(response);
         }
 
         public JToken Unfreeze(int timeout = 30)
@@ -83,8 +83,8 @@ namespace LXD.Domain
                 Timeout = timeout,
             };
 
-            JToken response = Client.API.Put($"/{Client.Version}/container/{Name}/state", payload);
-            return Client.API.WaitForOperationComplete(response);
+            JToken response = API.Put($"/{Client.Version}/container/{Name}/state", payload);
+            return API.WaitForOperationComplete(response);
         }
 
         public struct ContainerStatePut
@@ -113,21 +113,21 @@ namespace LXD.Domain
                 Height = height,
             };
 
-            JToken response = Client.API.Post($"/{Client.Version}/containers/{Name}/exec", exec);
+            JToken response = API.Post($"/{Client.Version}/containers/{Name}/exec", exec);
             string operationUrl = response.Value<string>("operation");
             if (waitForWebSocket == false)
             {
-                Client.API.WaitForOperationComplete(response);
+                API.WaitForOperationComplete(response);
                 // wait-for-websocket is false. Nothing to return.
                 return null;
             }
 
-            response = Client.API.Get(operationUrl);
+            response = API.Get(operationUrl);
 
             if (interactive == true)
             {
                 string fdsSecret = response.SelectToken("metadata.metadata.fds.0").Value<string>();
-                string wsUrl = $"{Client.API.BaseUrlWebSocket}{operationUrl}/websocket?secret={fdsSecret}";
+                string wsUrl = $"{API.BaseUrlWebSocket}{operationUrl}/websocket?secret={fdsSecret}";
 
                 Task<string> task = Task.Run(() => ClientWebSocketExtensions.ReadAllLines(wsUrl));
                 string stdouterr = task.Result;
@@ -160,7 +160,7 @@ namespace LXD.Domain
             IRestRequest request = new RestRequest($"/{Client.Version}/containers/{Name}/files");
             request.AddParameter("path", path);
             return "";
-            //IRestResponse response = Client.API.Execute(request);
+            //IRestResponse response = API.Execute(request);
             //return response.Content;
         }
 
@@ -170,8 +170,8 @@ namespace LXD.Domain
             return;
         }
 
-        public ContainerState State => Client.API.Get<ContainerState>($"/{Client.Version}/containers/{Name}/state");
-        public Collection<object> Logs => new Collection<object>($"/{Client.Version}/containers/{Name}/logs");
-        public Collection<Container> Snapshots => new Collection<Container>($"/{Client.Version}/containers/{Name}/snapshots");
+        public ContainerState State => API.Get<ContainerState>($"/{Client.Version}/containers/{Name}/state");
+        public Collection<object> Logs => new Collection<object>(API, $"/{Client.Version}/containers/{Name}/logs");
+        public Collection<Container> Snapshots => new Collection<Container>(API, $"/{Client.Version}/containers/{Name}/snapshots");
     }
 }

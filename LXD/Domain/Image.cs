@@ -2,7 +2,7 @@
 
 namespace LXD.Domain
 {
-    public struct Image
+    public class Image : RemoteObject
     {
         public string[] Aliases;
         public string Architecture;

@@ -2,7 +2,7 @@
 
 namespace LXD.Domain
 {
-    public struct Profile
+    public class Profile : RemoteObject
     {
         public string Name;
         public Dictionary<string, string> Config;

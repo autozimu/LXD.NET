@@ -13,8 +13,7 @@ namespace LXD
     {
         public const string Version = "1.0";
 
-        [ThreadStatic]
-        public static API API;
+        public API API;
 
         public bool Trusted => API.Get($"/{Version}").SelectToken("metadata.auth").Value<string>() == "trusted";
 
@@ -33,12 +32,12 @@ namespace LXD
             // Verify connection.
             API.Get($"/{Version}");
 
-            Certificates = new Collection<Certificate>($"/{Version}/certificates");
-            Containers = new Collection<Container>($"/{Version}/containers");
-            Images = new Collection<Image>($"/{Version}/images");
-            Networks = new Collection<Network>($"/{Version}/networks");
-            Operations = new Collection<Operation>($"/{Version}/operations");
-            Profiles = new Collection<Profile>($"/{Version}/profiles");
+            Certificates = new Collection<Certificate>(API, $"/{Version}/certificates");
+            Containers = new Collection<Container>(API, $"/{Version}/containers");
+            Images = new Collection<Image>(API, $"/{Version}/images");
+            Networks = new Collection<Network>(API, $"/{Version}/networks");
+            Operations = new Collection<Operation>(API, $"/{Version}/operations");
+            Profiles = new Collection<Profile>(API, $"/{Version}/profiles");
 
             // Task.Run(() => GetEventsAsync());
         }

@@ -2,7 +2,7 @@
 
 namespace LXD.Domain
 {
-    public struct Operation
+    public class Operation : RemoteObject
     {
         public string Id;
         public string Class;

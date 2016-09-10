@@ -1,6 +1,6 @@
 ﻿namespace LXD.Domain
 {
-    public struct Network
+    public class Network : RemoteObject
     {
         public string Name;
         public string Type;

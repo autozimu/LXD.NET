@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace LXD.Domain
 {
-    public struct ContainerState
+    public class ContainerState : RemoteObject
     {
         public string Status;
         public int StatusCode;
