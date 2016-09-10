@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -18,9 +17,9 @@ namespace LXD
 
         public static async Task<string> ReadLinesAsync(this ClientWebSocket ws)
         {
-			StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
-			const int WebSocketChunkSize = 1024;
+            const int WebSocketChunkSize = 1024;
             byte[] buffer = new byte[WebSocketChunkSize];
             WebSocketReceiveResult result;
             do
@@ -31,6 +30,16 @@ namespace LXD
             } while (!result.EndOfMessage && ws.State == WebSocketState.Open);
 
             return sb.ToString();
+        }
+
+        public static async Task WriteAsync(this ClientWebSocket ws, string message)
+        {
+            byte[] buffer = Encoding.UTF8.GetBytes(message);
+            await ws.SendAsync(
+                new ArraySegment<byte>(buffer), 
+                WebSocketMessageType.Text, 
+                endOfMessage: true,
+                cancellationToken: CancellationToken.None);
         }
     }
 }
