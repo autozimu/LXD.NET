@@ -20,6 +20,7 @@
 using System.IO;
 using Newtonsoft.Json;
 using RestSharp.Serializers;
+using System.Diagnostics.Contracts;
 
 namespace LXD
 {
@@ -43,6 +44,8 @@ namespace LXD
         /// Default serializer with overload for allowing custom Json.NET settings
         /// </summary>
         public RestSharpSerializer(Newtonsoft.Json.JsonSerializer serializer){
+            Contract.Requires(serializer != null);
+
             ContentType = "application/json";
             _serializer = serializer;
         }

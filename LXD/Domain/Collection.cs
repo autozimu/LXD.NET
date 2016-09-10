@@ -13,6 +13,9 @@ namespace LXD.Domain
 
         public Collection(API API, string component)
         {
+            Contract.Requires(API != null);
+            Contract.Requires(component != null);
+
             this.API = API;
             this.component = component;
         }
