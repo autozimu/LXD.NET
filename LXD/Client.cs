@@ -56,7 +56,7 @@ namespace LXD
 
         public event NewEventHandler NewEvent;
 
-        async Task GetEventsAsync()
+        private async Task GetEventsAsync()
         {
             using (ClientWebSocket ws = new ClientWebSocket())
             {

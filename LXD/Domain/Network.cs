@@ -1,4 +1,5 @@
-﻿namespace LXD.Domain
+﻿
+namespace LXD.Domain
 {
     public class Network : RemoteObject
     {

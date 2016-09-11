@@ -6,18 +6,18 @@ namespace LXDTests
     [TestClass]
     public class ClientTests
     {
-        static Client client;
+        private static Client s_client;
 
         [ClassInitialize]
         public static void Setup(TestContext context)
         {
-            client = new Client("https://ubuntu:8443", "cert/client.p12", "");
+            s_client = new Client("https://ubuntu:8443", "cert/client.p12", "");
         }
 
         [TestMethod]
         public void Trusted_ShouldBeTrue()
         {
-            Assert.AreEqual(true, client.Trusted);
+            Assert.AreEqual(true, s_client.Trusted);
         }
 
         [TestMethod]
@@ -31,25 +31,25 @@ namespace LXDTests
         [TestMethod]
         public void Certificates_ShouldBeCollection()
         {
-            Assert.IsTrue(client.Certificates.Count >= 0);
+            Assert.IsTrue(s_client.Certificates.Count >= 0);
         }
 
         [TestMethod]
         public void Containers_ShouldBeCollection()
         {
-            Assert.IsTrue(client.Containers.Count >= 0);
+            Assert.IsTrue(s_client.Containers.Count >= 0);
         }
 
         [TestMethod]
         public void Images_ShouldBeCollection()
         {
-            Assert.IsTrue(client.Images.Count >= 0);
+            Assert.IsTrue(s_client.Images.Count >= 0);
         }
 
         [TestMethod]
         public void Networks_ShouldBeCollection()
         {
-            Assert.IsTrue(client.Networks.Count >= 0);
+            Assert.IsTrue(s_client.Networks.Count >= 0);
         }
 
         // Disable for now.
@@ -59,13 +59,13 @@ namespace LXDTests
         [Ignore]
         public void Operations_ShouldBeCollection()
         {
-            Assert.IsTrue(client.Operations.Count >= 0);
+            Assert.IsTrue(s_client.Operations.Count >= 0);
         }
 
         [TestMethod]
         public void Profiles_ShouldBeCollection()
         {
-            Assert.IsTrue(client.Profiles.Count >= 0);
+            Assert.IsTrue(s_client.Profiles.Count >= 0);
         }
     }
 }

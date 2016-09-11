@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace LXD
 {
-    class PascalCasePropertyNamesContractResolver : DefaultContractResolver
+    internal class PascalCasePropertyNamesContractResolver : DefaultContractResolver
     {
         protected override string ResolvePropertyName(string propertyName)
         {

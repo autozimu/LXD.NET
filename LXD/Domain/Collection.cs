@@ -7,9 +7,9 @@ namespace LXD.Domain
 {
     public class Collection<T> : RemoteObject, IEnumerable<T>
     {
-        string component;
+        private string _component;
 
-        public string[] IDs => API.Get<string[]>(component);
+        public string[] IDs => API.Get<string[]>(_component);
 
         public Collection(API API, string component)
         {
@@ -17,7 +17,7 @@ namespace LXD.Domain
             Contract.Requires(component != null);
 
             this.API = API;
-            this.component = component;
+            _component = component;
         }
 
         public int Count => IDs.Length;
@@ -57,7 +57,7 @@ namespace LXD.Domain
 
         public void Remove(string id)
         {
-            IRestRequest request = new RestRequest($"{component}/{id}", Method.DELETE);
+            IRestRequest request = new RestRequest($"{_component}/{id}", Method.DELETE);
             API.Execute(request);
         }
     }

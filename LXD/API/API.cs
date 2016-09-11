@@ -108,12 +108,12 @@ namespace LXD
 
         public string BaseUrlWebSocket => BaseUrl.AbsoluteUri.Replace("http", "ws");
 
-        bool IsSuccessStatusCode(IRestResponse response)
+        private bool IsSuccessStatusCode(IRestResponse response)
         {
             return (int)response.StatusCode >= 200 && (int)response.StatusCode <= 299;
         }
 
-        T ConvertToDomainObject<T>(JToken token)
+        private T ConvertToDomainObject<T>(JToken token)
         {
             Contract.Requires(token != null);
 

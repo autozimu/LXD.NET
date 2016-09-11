@@ -11,19 +11,19 @@ namespace LXDTests
     public class ContainerTests
     {
         public TestContext TestContext;
-        static Client client;
+        private static Client s_client;
 
 
         [ClassInitialize]
         public static void Setup(TestContext context)
         {
-            client = new Client("https://ubuntu:8443", "cert/client.p12", "");
+            s_client = new Client("https://ubuntu:8443", "cert/client.p12", "");
         }
 
         [TestMethod]
         public void Container_ExecSimpleCommand()
         {
-            ClientWebSocket ws = client.Containers[0].Exec(new[] { "uname" }).First();
+            ClientWebSocket ws = s_client.Containers[0].Exec(new[] { "uname" }).First();
             string stdouterr = Task.Run(() => ws.ReadLinesAsync()).Result;
 
             Assert.AreEqual("Linux\r\n", stdouterr);
@@ -32,7 +32,7 @@ namespace LXDTests
         [TestMethod]
         public void Container_ExecNonInteractiveCommand()
         {
-            IEnumerable<ClientWebSocket> wss = client.Containers[0].Exec(new[] { "uname" }, interactive: false);
+            IEnumerable<ClientWebSocket> wss = s_client.Containers[0].Exec(new[] { "uname" }, interactive: false);
             string stdout = Task.Run(() => wss.Skip(1).First().ReadLinesAsync()).Result;
 
             Assert.AreEqual("Linux\n", stdout);
@@ -42,7 +42,7 @@ namespace LXDTests
         [Ignore]
         public void Container_ExecCommandWithInput()
         {
-            ClientWebSocket ws = client.Containers[0].Exec(new[] { "cat" }).First();
+            ClientWebSocket ws = s_client.Containers[0].Exec(new[] { "cat" }).First();
 
             Task.Run(() => ws.WriteAsync("Yo\r\n")).Wait();
             string output = Task.Run(() => ws.ReadLinesAsync()).Result;

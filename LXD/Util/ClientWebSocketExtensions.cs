@@ -36,8 +36,8 @@ namespace LXD
         {
             byte[] buffer = Encoding.UTF8.GetBytes(message);
             await ws.SendAsync(
-                new ArraySegment<byte>(buffer), 
-                WebSocketMessageType.Text, 
+                new ArraySegment<byte>(buffer),
+                WebSocketMessageType.Text,
                 endOfMessage: true,
                 cancellationToken: CancellationToken.None);
         }
