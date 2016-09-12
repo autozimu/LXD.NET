@@ -1,6 +1,6 @@
 # LXD.NET
 [![Build status](https://ci.appveyor.com/api/projects/status/d9hk73a1opdlhxp9?svg=true)](https://ci.appveyor.com/project/JunfengLi/lxd-net)
-[![NuGet](https://img.shields.io/nuget/v/LXD.svg?maxAge=2592000)](https://www.nuget.org/packages/LXD)
+[![NuGet version](https://badge.fury.io/nu/lxd.svg)](https://www.nuget.org/packages/LXD)
 
 [LXD](http://www.ubuntu.com/cloud/lxd) client implemented in C#.
 
